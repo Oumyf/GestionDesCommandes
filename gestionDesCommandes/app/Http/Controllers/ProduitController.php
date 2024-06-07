@@ -12,38 +12,25 @@ class ProduitController extends Controller
 {
     public function ajouter()
     {
+        $produits = Produit::all(); // Récupère toutes les catégories de la base de données
         $categories = Categorie::all(); // Récupère toutes les catégories de la base de données
-        $users = User::all(); // Récupère toutes les catégories de la base de données
-        return view('Produits.ajouter', compact('categories', 'users'));
+        $etat_produits = Produit::distinct()->pluck('etat_produit');
+        return view('produits.ajouter', compact('categories','produits','etat_produits'));
     }
 
     public function sauvegarder(Request $request)
     {
         $validatedData = $request->validate([
-            'nom' => 'required|string|max:255',
-            'description' => 'required|string',
-            'adresse' => 'required|string',
-            'statut' => 'required|in:occupe,pas_occupe',
+            'reference' => 'required|string|max:255',
+            'designation' => 'required|string',
+            'prix_unitaire' => 'required|integer',
+            'etat_produit' => 'required|in:disponible,en_rupture,en_stock',
             'image' => 'required',
             'categorie_id' => 'required|exists:categories,id',
 
         ]);
 
-        // Initialisation de la variable pour le chemin de l'image
-        $image = null;
-        // Vérifier si un fichier image est uploadé
-        if ($request->hasFile('image')) {
-            // Stocker l'image dans le répertoire 'public/blog'
-            $chemin_image = $request->file('image')->store('public/blog');
-
-            // Vérifier si le chemin de l'image est Produit généré
-            if (!$chemin_image) {
-                return redirect()->back()->with('error', "Erreur lors du téléchargement de l'image.");
-            }
-
-            // Récupérer le nom du fichier de limage
-            $image = basename($chemin_image);
-        }
+      
 
 
         Produit::create($validatedData);
@@ -54,21 +41,21 @@ class ProduitController extends Controller
     public function Afficher()
     {
         $Produits = Produit::all();
-        return view('Produits.listeProduits', compact('Produits'));
+        return view('produits.liste', compact('Produits'));
     }
 
     public function afficher_details($id){
         $categories = Categorie::all();
-        $Produit = Produit::findOrFail($id);
-        return view('Produits.details', compact('Produit', 'categories'));
+        $Produits = Produit::findOrFail($id);
+        return view('Produits.details', compact('Produits', 'categories'));
     }
 
 
     public function modifier($id)
     {
         $categories = Categorie::all();
-        $Produit = Produit::findOrFail($id);
-        return view('Produits.modifier', compact('Produit', 'categories'));
+        $Produits = Produit::findOrFail($id);
+        return view('Produits.modifier', compact('Produits', 'categories'));
 
     }
 
@@ -94,6 +81,6 @@ class ProduitController extends Controller
         $Produit = Produit::findOrFail($id);
         $Produit->delete();
 
-        return redirect()->back()->with('status', "Le Produit a Produit été supprimé avec succès");
+        return redirect()->back()->with('status', "Le Produit a bien été supprimé avec succès");
     }
 }

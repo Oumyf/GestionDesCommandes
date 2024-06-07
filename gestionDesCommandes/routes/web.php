@@ -9,19 +9,19 @@ Route::get('/', function () {
 
 Route::get('/produits',[ProduitController::class,'afficher']);
 
-Route::post('/produits/{id}',[ProduitController::class,'Affichage_details']);
+Route::get('/produits/{id}',[ProduitController::class,'Afficher_details'])->name('produits.details');
 
 
 
-Route::get('/ajouterProduit',[ProduitController::class,'ajouter']);
+Route::get('/ajouter',[ProduitController::class,'ajouter']);
 
-Route::post('/ajouterProduit/{id}',[ProduitController::class,'sauvegarder']);
+Route::post('/ajouterProduit',[ProduitController::class,'sauvegarder'])->name('produits.ajouter');
 
 
 
 Route::get('/modifierProduit',[ProduitController::class,'modifier']);
 
-Route::put('/modifierProduit/{id}',[ProduitController::class,'sauvegardeModif']);
+Route::post('/modifierProduit/{id}',[ProduitController::class,'sauvegardeModif']);
 
 
 
