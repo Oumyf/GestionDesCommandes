@@ -54,26 +54,29 @@ class ProduitController extends Controller
     public function modifier($id)
     {
         $categories = Categorie::all();
-        $Produits = Produit::findOrFail($id);
-        return view('Produits.modifier', compact('Produits', 'categories'));
+        $etat_produits = Produit::distinct()->pluck('etat_produit');
+        $produit = Produit::findOrFail($id);
+        return view('produits.modifier', compact('categories','produit','etat_produits'));
 
     }
 
-    public function sauvegardeModif(Request $request)
+    public function sauvegardeModif(Request $request) 
     {
         $request->validate([
-            'nom' => 'required',
-            'description' => 'required',
-            'statut' => 'required',
+            'reference' => 'required',
+            'designation' => 'required',
+            'prix_unitaire' => 'required',
+            'etat_produit' => 'required',
             'image' => 'required',
         ]);
-        $Produit = Produit::find($request->id);
-        $Produit->nom = $request->nom;
-        $Produit->description = $request->description;
-        $Produit->image = $request->image;
-        $Produit->statut = $request->statut;
-        $Produit->update();
-        return redirect('/Produits')->with('status', "Le Produit a bien été modifié avec succès");
+        $produit = Produit::find($request->id);
+        $produit->reference = $request->reference;
+        $produit->designation = $request->designation;
+        $produit->image = $request->image;
+        $produit->etat_produit = $request->etat_produit;
+        $produit->prix_unitaire = $request->prix_unitaire;
+        $produit->update();
+        return redirect('/produits')->with('status', "Le Produit a bien été modifié avec succès");
     }
 
     public function supprimer($id)

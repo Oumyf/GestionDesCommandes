@@ -34,7 +34,7 @@
                   <p class="card-text"><small class="text-muted">{{ $produit->prix_unitaire }}</small></p>
                   <p class="card-text"><strong>Statut:</strong> {{ $produit->etat_produit ? 'disponible' : ($produit->etat_produit ? 'en_rupture' : 'en_stock') }}</p>
                   <a href="/modifierProduit/{{ $produit->id }}" class="btn btn-info">Modifier</a>
-                  <a href="/supprimerProduit/{{ $produit->id }}" class="btn btn-danger">Supprimer</a>
+                  <a href="/supprimerProduit/{{ $produit->id }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce bien ?');">Supprimer</a>
                   <a href="{{ route('produits.details', $produit->id) }}" class="btn btn-primary">Voir les détails</a>                </div>
 
                   <br>
