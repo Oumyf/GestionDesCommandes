@@ -30,9 +30,6 @@ class ProduitController extends Controller
 
         ]);
 
-      
-
-
         Produit::create($validatedData);
 
         return redirect()->back()->with('status', "Le Produit a été ajouté avec succès");
@@ -70,11 +67,6 @@ class ProduitController extends Controller
             'image' => 'required',
         ]);
         $produit = Produit::find($request->id);
-        $produit->reference = $request->reference;
-        $produit->designation = $request->designation;
-        $produit->image = $request->image;
-        $produit->etat_produit = $request->etat_produit;
-        $produit->prix_unitaire = $request->prix_unitaire;
         $produit->update();
         return redirect('/produits')->with('status', "Le Produit a bien été modifié avec succès");
     }
