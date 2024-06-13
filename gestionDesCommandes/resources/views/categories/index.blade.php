@@ -60,7 +60,7 @@
     <div class="container">
         <h1 class="text-center header-title">Catégories</h1>
         <div class="d-flex justify-content-end mb-3">
-            <a href="{{ route('categories.ajouter') }}" class="btn create-btn text-white">Ajouter une catégorie</a>
+            <a href="{{ route('categories.create') }}" class="btn create-btn text-white">Ajouter une catégorie</a>
         </div>
         @if (session('success'))
             <div class="alert alert-success">
@@ -83,8 +83,8 @@
                             <td>{{ $categorie->libelle }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('categories.modifier', $categorie->id) }}" class="btn btn-primary">Modifier</a>
-                                    <form action="{{ route('categories.supprimer', $categorie->id) }}" method="POST" style="display:inline;">
+                                    <a href="{{ route('categories.edit', $categorie->id) }}" class="btn btn-primary">Modifier</a>
+                                    <form action="{{ route('categories.destroy', $categorie->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">Supprimer</button>

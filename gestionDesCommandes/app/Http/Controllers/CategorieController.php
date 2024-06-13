@@ -12,12 +12,12 @@ class CategorieController extends Controller
         return view('/categories.index', compact('categories'));
     }
 
-    public function ajouter()
+    public function create()
     {
-        return view('/categories.ajouter');
+        return view('/categories.create');
     }
 
-    public function sauvegarder(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'libelle' => 'required',
@@ -27,20 +27,19 @@ class CategorieController extends Controller
         return redirect()->route('categories.index')->with('success', 'Catégorie ajoutée avec succés.');
     }
 
-    public function afficher()
+    public function show(Categorie $categorie)
     {
-        $categories = Categorie::all();
-        return view('/categories.index', compact('categories'));
+        return view('/categories.show', compact('categorie'));
     }
 
-    public function modifier($id)
+    public function edit($id)
     {
-        $categories = Categorie::all();
         $categorie = Categorie::findOrFail($id);
-        return view('/categories.modifier', compact('categorie','categories'));
+        $categories = Categorie::all();
+        return view('/categories.edit', compact('categorie','categories'));
     }
 
-    public function modifierCategorie(Request $request, Categorie $categorie)
+    public function update(Request $request, Categorie $categorie)
     {
         $request->validate([
             'libelle' => 'required|string|max:255',
@@ -51,7 +50,7 @@ class CategorieController extends Controller
                          ->with('success', 'Catégorie modifiée avec succés.');
     }
 
-    public function supprimer($id)
+    public function destroy($id)
     {
         $categorie = Categorie::findOrFail($id);
         $categorie->delete();
