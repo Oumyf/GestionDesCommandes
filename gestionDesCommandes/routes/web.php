@@ -1,35 +1,36 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PanierController;
 use App\Http\Controllers\ProduitController;
-use App\Http\Controllers\CategorieController;
+ use App\Http\Controllers\CategorieController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/produits',[ProduitController::class,'afficher']);
+// Routes pour les produits
+Route::get('/products', [ProduitController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProduitController::class, 'show'])->name('products.show');
+Route::get('/products/create', [ProduitController::class, 'create'])->name('products.create');
+Route::post('/products', [ProduitController::class, 'store'])->name('products.store');
+Route::get('/products/{id}/edit', [ProduitController::class, 'edit'])->name('products.edit');
+Route::put('/products/{id}', [ProduitController::class, 'update'])->name('products.update');
+Route::delete('/products/{id}', [ProduitController::class, 'destroy'])->name('products.destroy');
 
-Route::get('/produits/{id}',[ProduitController::class,'Afficher_details'])->name('produits.details');
+// Routes pour les catégories
+Route::get('/categories', [CategorieController::class, 'index'])->name('categories.index');
+Route::get('/categories/create', [CategorieController::class, 'create'])->name('categories.create');
+Route::post('/categories', [CategorieController::class, 'store'])->name('categories.store');
+Route::get('/categories/edit/{id}', [CategorieController::class, 'edit'])->name('categories.edit');
+Route::put('/categories/{id}', [CategorieController::class, 'update'])->name('categories.update');
+Route::delete('/categories/destroy/{id}', [CategorieController::class, 'destroy'])->name('categories.destroy');
 
-Route::get('/ajouter',[ProduitController::class,'ajouter']);
-Route::post('/ajouterProduit',[ProduitController::class,'sauvegarder'])->name('produits.ajouter');
-
-Route::get('/modifierProduit/{id}',[ProduitController::class,'modifier'])->name('produits.modifier');
-Route::post('/modifierProduit',[ProduitController::class,'sauvegardeModif']);
-
-Route::get('/supprimerProduit/{id}',[ProduitController::class,'supprimer']);
+// Routes pour le panier et les commandes
+Route::post('/cart/add', [PanierController::class, 'add'])->name('cart.add');
+Route::get('/cart', [PanierController::class, 'index'])->name('cart.index');
+Route::delete('/cart/{id}', [PanierController::class, 'remove'])->name('cart.remove');
+Route::post('/order', [OrderController::class, 'store'])->name('orders.store');
 
 
-Route::get('/categories',[CategorieController::class,'afficher'])->name('categories.index');
-
-Route::get('/ajouter',[CategorieController::class,'ajouter'])->name('categories.ajouter');
-Route::post('/ajouterCategorie',[CategorieController::class,'sauvegarder'])->name('categories.sauvegarder');
-
-Route::get('/modifierCategorie/{id}',[CategorieController::class,'modifier'])->name('categories.modifier');
-Route::put('/modifierCategorie', [CategorieController::class, 'modifier'])->name('categories.modifier');
-
-Route::delete('/supprimerCategorie/{id}',[CategorieController::class,'supprimer'])->name('categories.supprimer');
-
-// Route::get('/produits/search/{nom}',[ProduitController::class,'rechercher']);
-// Route::get('/produits/tri/{ordre}',[ProduitController::class,'tri']);

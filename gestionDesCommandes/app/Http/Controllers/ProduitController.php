@@ -2,80 +2,102 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bien;
-use App\Models\User;
+
+use App\Models\Produit;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
-use App\Models\Produit;
 
 class ProduitController extends Controller
 {
-    public function ajouter()
+    // Afficher le formulaire pour ajouter un produit
+    public function create()
     {
-        $produits = Produit::all(); // Récupère toutes les catégories de la base de données
-        $categories = Categorie::all(); // Récupère toutes les catégories de la base de données
-        $etat_produits = Produit::distinct()->pluck('etat_produit');
-        return view('produits.ajouter', compact('categories','produits','etat_produits'));
+        $categories = Categorie::all();
+        $etatProduits = Produit::distinct()->pluck('etat_produit');
+        return view('produits.create', compact('categories', 'etatProduits'));
     }
 
-    public function sauvegarder(Request $request)
+    // Sauvegarder un nouveau produit
+    public function store(Request $request)
     {
         $validatedData = $request->validate([
             'reference' => 'required|string|max:255',
-            'designation' => 'required|string',
-            'prix_unitaire' => 'required|integer',
+            'designation' => 'required|string|max:255',
+            'prix_unitaire' => 'required|numeric',
             'etat_produit' => 'required|in:disponible,en_rupture,en_stock',
-            'image' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'categorie_id' => 'required|exists:categories,id',
-
         ]);
+
+        // Gestion de l'upload de l'image
+        if ($request->hasFile('image')) {
+            $imageName = time().'.'.$request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $validatedData['image'] = $imageName;
+        }
 
         Produit::create($validatedData);
 
-        return redirect()->back()->with('status', "Le Produit a été ajouté avec succès");
+        return redirect()->route('produits.index')->with('status', "Le produit a été ajouté avec succès.");
     }
 
-    public function Afficher()
+    // Afficher tous les produits
+    public function index()
     {
-        $Produits = Produit::all();
-        return view('produits.liste', compact('Produits'));
+        $produits = Produit::all();
+        return view('produits.index', compact('produits'));
     }
 
-    public function afficher_details($id){
-        $categories = Categorie::all();
-        $Produits = Produit::findOrFail($id);
-        return view('Produits.details', compact('Produits', 'categories'));
-    }
-
-
-    public function modifier($id)
+    // Afficher les détails d'un produit spécifique
+    public function show($id)
     {
-        $categories = Categorie::all();
-        $etat_produits = Produit::distinct()->pluck('etat_produit');
         $produit = Produit::findOrFail($id);
-        return view('produits.modifier', compact('categories','produit','etat_produits'));
-
+        return view('produits.show', compact('produit'));
     }
 
-    public function sauvegardeModif(Request $request) 
+    // Afficher le formulaire pour modifier un produit
+    public function edit($id)
     {
-        $request->validate([
-            'reference' => 'required',
-            'designation' => 'required',
-            'prix_unitaire' => 'required',
-            'etat_produit' => 'required',
-            'image' => 'required',
+        $categories = Categorie::all();
+        $etatProduits = Produit::distinct()->pluck('etat_produit');
+        $produit = Produit::findOrFail($id);
+        return view('produits.edit', compact('categories', 'produit', 'etatProduits'));
+    }
+
+    // Sauvegarder les modifications apportées à un produit
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'reference' => 'required|string|max:255',
+            'designation' => 'required|string|max:255',
+            'prix_unitaire' => 'required|numeric',
+            'etat_produit' => 'required|in:disponible,en_rupture,en_stock',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'categorie_id' => 'required|exists:categories,id',
         ]);
-        $produit = Produit::find($request->id);
-        $produit->update();
-        return redirect('/produits')->with('status', "Le Produit a bien été modifié avec succès");
+
+        $produit = Produit::findOrFail($id);
+
+        // Gestion de l'upload de l'image
+        if ($request->hasFile('image')) {
+            $imageName = time().'.'.$request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $validatedData['image'] = $imageName;
+        } else {
+            $validatedData['image'] = $produit->image;
+        }
+
+        $produit->update($validatedData);
+
+        return redirect()->route('produits.index')->with('status', "Le produit a bien été modifié avec succès.");
     }
 
-    public function supprimer($id)
+    // Supprimer un produit
+    public function destroy($id)
     {
-        $Produit = Produit::findOrFail($id);
-        $Produit->delete();
+        $produit = Produit::findOrFail($id);
+        $produit->delete();
 
-        return redirect()->back()->with('status', "Le Produit a bien été supprimé avec succès");
+        return redirect()->route('produits.index')->with('status', "Le produit a bien été supprimé avec succès.");
     }
 }

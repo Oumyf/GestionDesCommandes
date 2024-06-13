@@ -15,6 +15,7 @@ class CreateProduitCommandesTable extends Migration
             $table->id();
             $table->foreignId('produit_id')->constrained()->onDelete('cascade');
             $table->foreignId('commande_id')->constrained()->onDelete('cascade');
+            $table->integer('quantite')->unsigned()->default(1); // Ajout de la colonne quantité
             $table->timestamps();
         });
     }
